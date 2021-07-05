@@ -3,7 +3,7 @@ import { Table, Button, Spinner } from "react-bootstrap";
 import axios from "axios";
 import history from "../router/history";
 
-export default function Home() {
+export default function Home(props) {
 	const [posts, setPosts] = useState([]);
 	const [pageCount, setPageCount] = useState(0);
 	const [isLoading, setLoading] = useState(false);
