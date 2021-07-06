@@ -1,40 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Table, Button, Spinner } from "react-bootstrap";
 import axios from "axios";
 import history from "../router/history";
+import { AppContext } from "../AppContext";
 
 export default function Home(props) {
-	const [posts, setPosts] = useState([]);
-	const [pageCount, setPageCount] = useState(0);
-	const [isLoading, setLoading] = useState(false);
-
-	const handlePostsApi = () => {
-		setLoading(true);
-		axios
-			.get(
-				`https://hn.algolia.com/api/v1/search_by_date?tags=story&page=${pageCount}`
-			)
-			.then((res) => {
-				setPosts(res.data.hits);
-				// if (!posts.length) setPosts(res.data.hits);
-				// else setPosts(...posts, ...res.data.hits);
-				console.log(posts);
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-			.finally(() => {
-				setLoading(false);
-			});
-	};
+	const [isLoading, setIsLoading] = useState(false);
+	const { posts, setPosts, pageCount, setPageCount } = useContext(AppContext);
 
 	useEffect(() => {
-		// handlePostsApi();
-		setLoading(true);
+		const handlePostsApi = () => {
+			setIsLoading(true);
+			axios
+				.get(
+					`https://hn.algolia.com/api/v1/search_by_date?tags=story&page=${pageCount}`
+				)
+				.then((res) => {
+					setPosts(res.data.hits);
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+				.finally(() => {
+					setIsLoading(false);
+				});
+		};
+		handlePostsApi();
 		const intervalId = setInterval(() => handlePostsApi(), 10000);
-		// console.log(intervalId);
 		return () => clearInterval(intervalId);
-	}, [pageCount]);
+	}, [pageCount, setPosts]);
 
 	return (
 		<>
@@ -77,20 +71,20 @@ export default function Home(props) {
 					</tr>
 				</thead>
 				<tbody>
-					{posts &&
-						posts.length &&
-						posts.map((post, index) => (
-							<tr
-								key={index}
-								onClick={() => history.push("/post", { post: post })}
-							>
-								<td>{index + 1}</td>
-								<td>{post.title || "--"}</td>
-								<td>{post.url || "--"}</td>
-								<td>{post.created_at || "--"}</td>
-								<td>{post.author || "--"}</td>
-							</tr>
-						))}
+					{posts && posts.length
+						? posts.map((post, index) => (
+								<tr
+									key={index}
+									onClick={() => history.push("/post", { post: post })}
+								>
+									<td>{index + 1}</td>
+									<td>{post.title || "--"}</td>
+									<td>{post.url || "--"}</td>
+									<td>{post.created_at || "--"}</td>
+									<td>{post.author || "--"}</td>
+								</tr>
+						  ))
+						: null}
 				</tbody>
 			</Table>
 		</>

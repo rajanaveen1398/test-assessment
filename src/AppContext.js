@@ -1,13 +1,17 @@
-import React, { createContext } from "react";
+import React, { useState, createContext } from "react";
 import PropTypes from "prop-types";
 
 export const AppContext = createContext();
 
 export const ContextProvider = (props) => {
-	const abc = () => {};
+	const [posts, setPosts] = useState([]);
+	const [pageCount, setPageCount] = useState(0);
 
 	const contextVariables = {
-		abc,
+		posts,
+		setPosts,
+		pageCount,
+		setPageCount,
 	};
 	return (
 		<AppContext.Provider value={contextVariables}>

@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import history from "../router/history";
 import PropTypes from "prop-types";
-import { AppContext } from "../AppContext";
 
 export default function Post() {
-	const { abc } = useContext(AppContext);
 	return (
 		<>
 			<h3>Raw JSON</h3>
